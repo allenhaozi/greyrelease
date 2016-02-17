@@ -32,12 +32,33 @@ local get_bucket_by_hash = function( string_id )
     return bucket
 end
 
-function _M.get_bucket_by_id( id, policy )
+local get_bucket_by_range = function ( string_id )
 
+    if string_id == nil then
+        return nil
+    end
+
+    int_id = tonumber( string_id )
+    if int_id == nil then
+        return nil
+    end
+    
+    for k,v in pairs(init.range_map) do 
+        if v['range_start'] <= int_id and int_id <= v['range_end'] then
+            bucket = k
+            break
+        end
+    end
+    
+    return bucket
+end
+
+function _M.get_bucket_by_id( id, policy )
+    
     if policy == policyset.grey_policy_id_hash then
         bucket = get_bucket_by_hash( id )
-    elseif plicy == policyset.grey_policy_id_range then
-        ngx.say( 'developing ... ' )
+    elseif policy == policyset.grey_policy_id_range then
+        bucket = get_bucket_by_range( id )    
     else 
         -- default vlaue
     end
